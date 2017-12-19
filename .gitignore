@@ -56,3 +56,6 @@ typings/
 
 # dotenv environment variables file
 .env
+
+# db file will be inside config folder
+/config/*
