@@ -37,7 +37,6 @@ module.exports = function(app, db) {
             if(err) {
                 res.send({ 'error': 'An error has occurred' });
             } else {                
-                // console.log(items);
                 updateId = items[0].updateId;
 
                 let url = `${baseUrl}${botApiToken}/getUpdates?offset=${updateId}`;
@@ -57,15 +56,33 @@ module.exports = function(app, db) {
                                 console.log('UpdateId updated...');
                             }
                         });
-                        // res.end(response.data.result[0].message.chat.id);
-                        res.end(response.data.result[0].message.chat.id.toString());
+                        
+                        let chatIdFromResponse = response.data.result[0].message.chat.id.toString();
+                        axios.post(`${baseUrl}${botApiToken}/sendMessage`,{
+                            chat_id: chatIdFromResponse,
+                            text: 'configured'
+                        })
+                        .then(response => {
+                            console.log('Message posted!');
+                            res.end(chatIdFromResponse);
+                        })
+                        .catch(err => {
+                            //console.log('Error:', err);
+                            //res.end('Error:', err);
+
+                            console.log('Error -- b');
+                            res.end('Error');
+                        });
                     } else {
                         res.end('No new message');
                     }
                 })
                 .catch(err => {
-                    console.log('Error:', err);
-                    res.end('Error:', err);
+                    // console.log('Error:', err);
+                    // res.end('Error:', err);
+
+                    console.log('Error -- c');
+                    res.end('Error');
                 });
             }
         });        
