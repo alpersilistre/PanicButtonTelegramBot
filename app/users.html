@@ -52,13 +52,10 @@
         <div class="row">
             <div class="col-md-6 col-md-offset-3">
                 <div class="starter-template">
-                    <h1 style="text-align: center;">Panic Button Setup</h1>
-                    <h3>Welcome to the setup page of Panic Button project. Please follow the steps listed below.</h3>
-                    <ol style="margin-left: -20px; margin-top: 40px; font-size: 18px">
-                        <li>Open the Telegram mobile app.</li>
-                        <li>Search EmergencyButtonBot, select and start chat.</li>
-                        <li>Wait for the approval.</li>
-                        <li>After approval seen in the chat, you can use the system.</li>
+                    <h1 style="text-align: center;">Users</h1>
+                    <h3>This page will show users and allow to edit emails.</h3>
+                    <ol id="userList" style="margin-left: -20px; margin-top: 40px; font-size: 18px">
+
                     </ol>
                 </div>
             </div>
@@ -71,6 +68,23 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
         crossorigin="anonymous"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function(event) {
+            let userList = document.getElementById('userList');
+
+            // $.ajax({
+            //     type: "GET",
+            //     url: "localhost:8000/getUsers",
+            //     cache: false,
+            //     success: function(data){
+            //         console.log('Success', data);
+            //     },
+            //     error: function(data){
+            //         console.log('Error', data);
+            //     }
+            // });
+        });
+    </script>
 </body>
 
 </html>

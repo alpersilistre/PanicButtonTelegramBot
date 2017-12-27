@@ -40,24 +40,29 @@ module.exports = function(app, db) {
                 updateId = items[0].updateId;
 
                 let url = `${baseUrl}${botApiToken}/getUpdates?offset=${updateId}`;
-                // console.log(url);
                 axios.get(url)
                 .then(response => {
                     if(response.data.result[0] !== undefined) {
                         newUpdateNumber = parseInt(updateId) + 1;
                         let details = { '_id': new ObjectID(items[0]._id) };
                         let updatedObj = { updateId: newUpdateNumber };
+                        let chatIdFromResponse = response.data.result[0].message.chat.id.toString();
+
+                        // Add new user to the Db
+                        let user = { 
+                            chatId: chatIdFromResponse,
+                            name: response.data.result[0].message.chat.first_name,
+                            email: ''
+                        };
+
+                        db.collection('users').insert(user, (err, results) => {
+                            err ? res.send({ 'error': 'An error has occurred' }) : console.log('User added to the db...');
+                        });
 
                         db.collection('telegram').update(details, updatedObj, (err, results) => {
-                            if(err) {
-                                res.send({ 'error': 'An error has occurred' });
-                            } else {
-                                //res.send(updatedObj);
-                                console.log('UpdateId updated...');
-                            }
+                            err ? res.send({ 'error': 'An error has occurred' }) : console.log('UpdateId updated...');
                         });
                         
-                        let chatIdFromResponse = response.data.result[0].message.chat.id.toString();
                         axios.post(`${baseUrl}${botApiToken}/sendMessage`,{
                             chat_id: chatIdFromResponse,
                             text: 'configured'
@@ -67,9 +72,6 @@ module.exports = function(app, db) {
                             res.end(chatIdFromResponse);
                         })
                         .catch(err => {
-                            //console.log('Error:', err);
-                            //res.end('Error:', err);
-
                             console.log('Error -- b');
                             res.end('Error');
                         });
@@ -78,9 +80,6 @@ module.exports = function(app, db) {
                     }
                 })
                 .catch(err => {
-                    // console.log('Error:', err);
-                    // res.end('Error:', err);
-
                     console.log('Error -- c');
                     res.end('Error');
                 });
@@ -88,7 +87,15 @@ module.exports = function(app, db) {
         });        
     });
 
-    
+    app.get('/getUsers', (req, res) => {
+        db.collection('users').find({}).toArray((err, items) => {
+            if(err) {
+                res.send({ 'error': 'An error has occurred' });
+            } else {
+                res.send(items);
+            }
+        });
+    });
 
     // app.get('/telegram', (req, res) => {
     //     // const id = req.params.id;
